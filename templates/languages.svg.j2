@@ -104,14 +104,22 @@ div.ellipsis {
 
 <div>
 <span class="progress">
-{{ progress }}
+{%- for lang in languages %}
+<span style="background-color: {{ lang.color }};width: {{ lang.prop }}%;" class="progress-item"></span>
+{%- endfor %}
 </span>
 </div>
 
 <ul>
-
-{{ lang_list }}
-
+{%- for lang in languages %}
+<li style="animation-delay: {{ loop.index0 * 150 }}ms;">
+<svg xmlns="http://www.w3.org/2000/svg" class="octicon" style="fill:{{ lang.color }};"
+viewBox="0 0 16 16" version="1.1" width="16" height="16"><path
+fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8z"></path></svg>
+<span class="lang">{{ lang.name }}</span>
+<span class="percent">{{ lang.prop }}%</span>
+</li>
+{%- endfor %}
 </ul>
 
 </div>
