@@ -56,7 +56,7 @@ def generate_languages(s: Stats) -> None:
 async def main() -> None:
     logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
 
-    access_token = os.getenv("ACCESS_TOKEN")
+    access_token = os.getenv("ACCESS_TOKEN") or os.getenv("GITHUB_TOKEN")
     if not access_token:
         raise RuntimeError("A personal access token is required to proceed!")
 

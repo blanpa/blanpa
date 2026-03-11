@@ -1,10 +1,13 @@
 import asyncio
+import logging
 from dataclasses import dataclass
 from typing import Any
 
 import aiohttp
 
 from github_stats.queries import Queries
+
+log = logging.getLogger(__name__)
 
 
 @dataclass
@@ -144,6 +147,10 @@ class Stats:
             for v in languages.values():
                 v["prop"] = 100 * (v.get("size", 0) / langs_total)
 
+        log.info(
+            "Overview: name=%s, repos=%d, stars=%d, forks=%d, languages=%d",
+            name, len(repos), stargazers, forks, len(languages),
+        )
         return name, stargazers, forks, languages, repos
 
     @staticmethod

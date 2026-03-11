@@ -32,6 +32,11 @@ class Queries:
                     json={"query": generated_query},
                 )
             result = await r.json()
+            if r.status != 200:
+                log.error("GraphQL query returned HTTP %d: %s", r.status, result)
+                return {}
+            if "errors" in (result or {}):
+                log.error("GraphQL errors: %s", result["errors"])
             if result is not None:
                 return result
         except Exception:
@@ -58,6 +63,9 @@ class Queries:
                     log.info("%s returned 202, retrying in %ds (attempt %d)", path, delay, attempt)
                     await asyncio.sleep(delay)
                     continue
+                if r.status != 200:
+                    log.error("REST %s returned HTTP %d", path, r.status)
+                    return {}
                 result = await r.json()
                 if result is not None:
                     return result
