@@ -149,7 +149,11 @@ class Stats:
 
         log.info(
             "Overview: name=%s, repos=%d, stars=%d, forks=%d, languages=%d",
-            name, len(repos), stargazers, forks, len(languages),
+            name,
+            len(repos),
+            stargazers,
+            forks,
+            len(languages),
         )
         return name, stargazers, forks, languages, repos
 
