@@ -12,7 +12,7 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  fill: #007a63;
+  fill: #00c8a5;
 }
 
 .title {
@@ -20,7 +20,7 @@
   font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  fill: #1c2227;
+  fill: #e6edf3;
 }
 
 .value {
@@ -28,7 +28,7 @@
   font-size: 26px;
   font-weight: 700;
   letter-spacing: -0.01em;
-  fill: #007a63;
+  fill: #00c8a5;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
@@ -37,15 +37,15 @@
   font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   font-size: 10px;
   letter-spacing: 0.06em;
-  fill: #5a5f62;
+  fill: #abb1b7;
 }
 </style>
 
-<rect x="0.5" y="0.5" width="459" height="199" rx="12" fill="#fafafa" stroke="#e6e6e6" />
+<rect x="0.5" y="0.5" width="459" height="199" rx="12" fill="#14181e" stroke="#2c2f35" />
 
 <text class="kicker" x="28" y="34">GITHUB STATS</text>
 <text class="title" x="28" y="58">blanpa</text>
-<line x1="28" y1="74.5" x2="432" y2="74.5" stroke="#e6e6e6" stroke-width="1" />
+<line x1="28" y1="74.5" x2="432" y2="74.5" stroke="#2c2f35" stroke-width="1" />
 
 <text class="value" x="28" y="112">25</text>
 <text class="label" x="28" y="130">STARS</text>

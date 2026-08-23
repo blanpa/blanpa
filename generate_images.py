@@ -1,12 +1,57 @@
 #!/usr/bin/python3
 
 import asyncio
+import base64
 import os
-import re
+from typing import Dict, List, Tuple
 
 import aiohttp
 
 from github_stats import Stats
+
+
+################################################################################
+# Configuration
+################################################################################
+
+# One file is rendered per palette; the README picks the matching one through
+# <picture> and prefers-color-scheme. The suffix becomes part of the filename,
+# so the light theme writes "overview.svg" and the dark one "overview-dark.svg".
+THEMES: Dict[str, Dict[str, str]] = {
+    "": {
+        "bg": "#fafafa",
+        "fg": "#1c2227",
+        "muted": "#5a5f62",
+        "accent": "#007a63",
+        "border": "#e6e6e6",
+        "track": "#e6e6e6",
+    },
+    "-dark": {
+        "bg": "#14181e",
+        "fg": "#e6edf3",
+        "muted": "#abb1b7",
+        "accent": "#00c8a5",
+        "border": "#2c2f35",
+        "track": "#2c2f35",
+    },
+}
+
+# Embedded so the display font survives the <img> context GitHub renders the
+# cards in, where no external resource is ever fetched
+DISPLAY_FONT = "assets/space-grotesk-700.woff2"
+
+# Languages listed individually before the remainder is folded into "Other".
+# The legend is laid out as two columns of three, so six entries fit exactly.
+MAX_LANGUAGES = 5
+OTHER_COLOR = "#8b949e"
+
+# Card geometry, mirrored from the templates
+CARD_LEFT = 28
+BAR_WIDTH = 404
+LEGEND_TOP = 130
+LEGEND_ROW_HEIGHT = 24
+LEGEND_ROWS = 3
+LEGEND_COLUMN_WIDTH = 212
 
 
 ################################################################################
@@ -22,6 +67,63 @@ def generate_output_folder() -> None:
         os.mkdir("generated")
 
 
+def escape(text: str) -> str:
+    """
+    Escape the characters that would break out of an SVG text node
+    """
+    return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
+
+
+def compact(value: int) -> str:
+    """
+    Shorten large numbers so they stay legible at 26px: 525070 becomes 525K
+    :param value: number to format
+    :return: formatted number
+    """
+    if value >= 1_000_000:
+        return f"{value / 1_000_000:.1f}M".replace(".0M", "M")
+    if value >= 10_000:
+        return f"{value / 1_000:.0f}K"
+    return f"{value:,}"
+
+
+def embedded_font() -> str:
+    """
+    :return: the display font, base64 encoded for use in a data URI
+    """
+    with open(DISPLAY_FONT, "rb") as f:
+        return base64.b64encode(f.read()).decode("ascii")
+
+
+def render(template: str, values: Dict[str, str]) -> str:
+    """
+    Substitute every {{ key }} placeholder in a template
+    :param template: template contents
+    :param values: placeholder names mapped to their replacements
+    :return: rendered template
+    """
+    for key, value in values.items():
+        template = template.replace("{{ " + key + " }}", str(value))
+    return template
+
+
+def write_themed(template_name: str, output_name: str, values: Dict[str, str]) -> None:
+    """
+    Render one template once per palette and write the results
+    :param template_name: file name inside templates/
+    :param output_name: file name inside generated/, without theme suffix
+    :param values: placeholder names mapped to their replacements
+    """
+    with open(f"templates/{template_name}", "r") as f:
+        template = f.read()
+
+    generate_output_folder()
+    font = embedded_font()
+    for suffix, palette in THEMES.items():
+        with open(f"generated/{output_name}{suffix}.svg", "w") as f:
+            f.write(render(template, {**values, **palette, "font": font}))
+
+
 ################################################################################
 # Individual Image Generation Functions
 ################################################################################
@@ -29,65 +131,67 @@ def generate_output_folder() -> None:
 
 async def generate_overview(s: Stats) -> None:
     """
-    Generate an SVG badge with summary statistics
+    Generate an SVG card with summary statistics
     :param s: Represents user's GitHub statistics
     """
-    with open("templates/overview.svg", "r") as f:
-        output = f.read()
-
-    output = re.sub("{{ name }}", await s.name, output)
-    output = re.sub("{{ stars }}", f"{await s.stargazers:,}", output)
-    output = re.sub("{{ forks }}", f"{await s.forks:,}", output)
-    output = re.sub("{{ contributions }}", f"{await s.total_contributions:,}", output)
-    changed = (await s.lines_changed)[0] + (await s.lines_changed)[1]
-    output = re.sub("{{ lines_changed }}", f"{changed:,}", output)
-    output = re.sub("{{ views }}", f"{await s.views:,}", output)
-    output = re.sub("{{ repos }}", f"{len(await s.repos):,}", output)
-
-    generate_output_folder()
-    with open("generated/overview.svg", "w") as f:
-        f.write(output)
+    added, removed = await s.lines_changed
+    write_themed(
+        "overview.svg",
+        "overview",
+        {
+            "name": escape(await s.name),
+            "stars": compact(await s.stargazers),
+            "forks": compact(await s.forks),
+            "repos": compact(len(await s.repos)),
+            "contributions": compact(await s.total_contributions),
+            "lines_changed": compact(added + removed),
+            "views": compact(await s.views),
+        },
+    )
 
 
 async def generate_languages(s: Stats) -> None:
     """
-    Generate an SVG badge with summary languages used
+    Generate an SVG card with the languages used
     :param s: Represents user's GitHub statistics
     """
-    with open("templates/languages.svg", "r") as f:
-        output = f.read()
-
-    progress = ""
-    lang_list = ""
     sorted_languages = sorted(
         (await s.languages).items(), reverse=True, key=lambda t: t[1].get("size")
     )
-    delay_between = 150
-    for i, (lang, data) in enumerate(sorted_languages):
-        color = data.get("color")
-        color = color if color is not None else "#000000"
-        progress += (
-            f'<span style="background-color: {color};'
-            f'width: {data.get("prop", 0):0.3f}%;" '
-            f'class="progress-item"></span>'
+
+    entries: List[Tuple[str, str, float]] = [
+        (lang, data.get("color") or OTHER_COLOR, data.get("prop", 0))
+        for lang, data in sorted_languages[:MAX_LANGUAGES]
+    ]
+    remainder = sorted_languages[MAX_LANGUAGES:]
+    if remainder:
+        entries.append(
+            ("Other", OTHER_COLOR, sum(d.get("prop", 0) for _, d in remainder))
         )
-        lang_list += f"""
-<li style="animation-delay: {i * delay_between}ms;">
-<svg xmlns="http://www.w3.org/2000/svg" class="octicon" style="fill:{color};"
-viewBox="0 0 16 16" version="1.1" width="16" height="16"><path
-fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8z"></path></svg>
-<span class="lang">{lang}</span>
-<span class="percent">{data.get("prop", 0):0.2f}%</span>
-</li>
 
-"""
+    bar = ""
+    offset = float(CARD_LEFT)
+    for _, color, prop in entries:
+        width = BAR_WIDTH * prop / 100
+        bar += (
+            f'<rect x="{offset:.2f}" y="92" width="{width:.2f}" '
+            f'height="10" fill="{color}" />\n'
+        )
+        offset += width
 
-    output = re.sub(r"{{ progress }}", progress, output)
-    output = re.sub(r"{{ lang_list }}", lang_list, output)
+    legend = ""
+    for i, (lang, color, prop) in enumerate(entries):
+        column, row = divmod(i, LEGEND_ROWS)
+        x = CARD_LEFT + column * LEGEND_COLUMN_WIDTH
+        y = LEGEND_TOP + row * LEGEND_ROW_HEIGHT
+        legend += (
+            f'<circle cx="{x + 5}" cy="{y - 4}" r="4.5" fill="{color}" />\n'
+            f'<text class="lang" x="{x + 18}" y="{y}">{escape(lang)}</text>\n'
+            f'<text class="pct" x="{x + 192}" y="{y}" '
+            f'text-anchor="end">{prop:.1f}%</text>\n'
+        )
 
-    generate_output_folder()
-    with open("generated/languages.svg", "w") as f:
-        f.write(output)
+    write_themed("languages.svg", "languages", {"bar": bar, "legend": legend})
 
 
 ################################################################################
@@ -101,7 +205,6 @@ async def main() -> None:
     """
     access_token = os.getenv("ACCESS_TOKEN")
     if not access_token:
-        # access_token = os.getenv("GITHUB_TOKEN")
         raise Exception("A personal access token is required to proceed!")
     user = os.getenv("GITHUB_ACTOR")
     if user is None:

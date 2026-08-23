@@ -1,4 +1,4 @@
-<svg width="460" height="200" viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GitHub statistics for blanpa">
+<svg width="460" height="200" viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Most used languages">
 <style>
 @font-face {
   font-family: "Space Grotesk";
@@ -12,7 +12,7 @@
   font-size: 10px;
   font-weight: 600;
   letter-spacing: 0.08em;
-  fill: #007a63;
+  fill: #00c8a5;
 }
 
 .title {
@@ -20,44 +20,64 @@
   font-size: 19px;
   font-weight: 700;
   letter-spacing: -0.02em;
-  fill: #1c2227;
+  fill: #e6edf3;
 }
 
-.value {
-  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  fill: #007a63;
+.lang {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  fill: #e6edf3;
+}
+
+.pct {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 11px;
+  fill: #abb1b7;
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
-
-.label {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-  font-size: 10px;
-  letter-spacing: 0.06em;
-  fill: #5a5f62;
-}
 </style>
 
-<rect x="0.5" y="0.5" width="459" height="199" rx="12" fill="#fafafa" stroke="#e6e6e6" />
+<defs>
+<clipPath id="bar-clip">
+<rect x="28" y="92" width="404" height="10" rx="5" />
+</clipPath>
+</defs>
 
-<text class="kicker" x="28" y="34">GITHUB STATS</text>
-<text class="title" x="28" y="58">blanpa</text>
-<line x1="28" y1="74.5" x2="432" y2="74.5" stroke="#e6e6e6" stroke-width="1" />
+<rect x="0.5" y="0.5" width="459" height="199" rx="12" fill="#14181e" stroke="#2c2f35" />
 
-<text class="value" x="28" y="112">25</text>
-<text class="label" x="28" y="130">STARS</text>
-<text class="value" x="172" y="112">12</text>
-<text class="label" x="172" y="130">FORKS</text>
-<text class="value" x="316" y="112">56</text>
-<text class="label" x="316" y="130">REPOSITORIES</text>
+<text class="kicker" x="28" y="34">LANGUAGES</text>
+<text class="title" x="28" y="58">By file size</text>
+<line x1="28" y1="74.5" x2="432" y2="74.5" stroke="#2c2f35" stroke-width="1" />
 
-<text class="value" x="28" y="170">113</text>
-<text class="label" x="28" y="188">CONTRIBUTIONS</text>
-<text class="value" x="172" y="170">525K</text>
-<text class="label" x="172" y="188">LINES CHANGED</text>
-<text class="value" x="316" y="170">244</text>
-<text class="label" x="316" y="188">VIEWS / 14D</text>
+<g clip-path="url(#bar-clip)">
+<rect x="28" y="92" width="404" height="10" fill="#2c2f35" />
+<rect x="28.00" y="92" width="163.86" height="10" fill="#f1e05a" />
+<rect x="191.86" y="92" width="66.46" height="10" fill="#3572A5" />
+<rect x="258.32" y="92" width="47.19" height="10" fill="#e34c26" />
+<rect x="305.51" y="92" width="38.49" height="10" fill="#3178c6" />
+<rect x="344.00" y="92" width="37.24" height="10" fill="#00ADD8" />
+<rect x="381.25" y="92" width="50.75" height="10" fill="#8b949e" />
+
+</g>
+
+<circle cx="33" cy="126" r="4.5" fill="#f1e05a" />
+<text class="lang" x="46" y="130">JavaScript</text>
+<text class="pct" x="220" y="130" text-anchor="end">40.6%</text>
+<circle cx="33" cy="150" r="4.5" fill="#3572A5" />
+<text class="lang" x="46" y="154">Python</text>
+<text class="pct" x="220" y="154" text-anchor="end">16.4%</text>
+<circle cx="33" cy="174" r="4.5" fill="#e34c26" />
+<text class="lang" x="46" y="178">HTML</text>
+<text class="pct" x="220" y="178" text-anchor="end">11.7%</text>
+<circle cx="245" cy="126" r="4.5" fill="#3178c6" />
+<text class="lang" x="258" y="130">TypeScript</text>
+<text class="pct" x="432" y="130" text-anchor="end">9.5%</text>
+<circle cx="245" cy="150" r="4.5" fill="#00ADD8" />
+<text class="lang" x="258" y="154">Go</text>
+<text class="pct" x="432" y="154" text-anchor="end">9.2%</text>
+<circle cx="245" cy="174" r="4.5" fill="#8b949e" />
+<text class="lang" x="258" y="178">Other</text>
+<text class="pct" x="432" y="178" text-anchor="end">12.6%</text>
+
 </svg>
