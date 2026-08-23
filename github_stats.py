@@ -13,6 +13,13 @@ import requests
 ###############################################################################
 
 
+class CredentialsError(RuntimeError):
+    """
+    Raised when the API rejects the access token, so that a dead or
+    under-scoped token fails the run instead of silently producing zeros.
+    """
+
+
 class Queries(object):
     """
     Class with functions to query the GitHub GraphQL (v4) API and the REST (v3)
@@ -49,10 +56,8 @@ class Queries(object):
                     json={"query": generated_query},
                 )
             result = await r_async.json()
-            if result is not None:
-                return result
-        except:
-            print("aiohttp failed for GraphQL query")
+        except Exception as e:
+            print(f"aiohttp failed for GraphQL query: {e}")
             # Fall back on non-async requests
             async with self.semaphore:
                 r_requests = requests.post(
@@ -61,9 +66,19 @@ class Queries(object):
                     json={"query": generated_query},
                 )
                 result = r_requests.json()
-                if result is not None:
-                    return result
-        return dict()
+
+        if not isinstance(result, dict):
+            return dict()
+        # An expired or under-scoped token still answers with HTTP 200 and a
+        # body describing the problem. Without this check the stats silently
+        # render as zeros and the workflow reports success.
+        if result.get("data") is None:
+            raise CredentialsError(
+                f"GraphQL query failed: {result.get('errors') or result.get('message')}"
+            )
+        if result.get("errors"):
+            print(f"GraphQL query returned partial data: {result['errors']}")
+        return result
 
     async def query_rest(self, path: str, params: Optional[Dict] = None) -> Dict:
         """
@@ -92,12 +107,30 @@ class Queries(object):
                     print(f"A path returned 202. Retrying...")
                     await asyncio.sleep(2)
                     continue
+                if r_async.status == 204:
+                    # Empty repositories answer 204 with no body at all, which
+                    # would otherwise fail to parse and burn all 60 retries
+                    return dict()
+                if r_async.status == 403 and (
+                    r_async.headers.get("X-RateLimit-Remaining") == "0"
+                ):
+                    # A rate limit is transient and should not fail the run
+                    print(f"Rate limited on {path}. Skipping this repository.")
+                    return dict()
+                if r_async.status in (401, 403):
+                    raise CredentialsError(
+                        f"REST query for {path} failed with HTTP "
+                        f"{r_async.status} - check that ACCESS_TOKEN is valid "
+                        f"and carries the repo and read:user scopes."
+                    )
 
                 result = await r_async.json()
                 if result is not None:
                     return result
-            except:
-                print("aiohttp failed for rest query")
+            except CredentialsError:
+                raise
+            except Exception as e:
+                print(f"aiohttp failed for rest query: {e}")
                 # Fall back on non-async requests
                 async with self.semaphore:
                     r_requests = requests.get(
@@ -271,6 +304,22 @@ class Stats(object):
         self._repos: Optional[Set[str]] = None
         self._lines_changed: Optional[Tuple[int, int]] = None
         self._views: Optional[int] = None
+        self._stats_lock = asyncio.Lock()
+        self._stats_loaded = False
+
+    async def _ensure_stats(self) -> None:
+        """
+        Run the overview query exactly once, even when several properties are
+        awaited concurrently. get_stats() empties its containers before it
+        starts paginating, so without this guard a second caller can observe
+        those empty containers, take them for a finished result and silently
+        work with no repositories at all.
+        """
+        async with self._stats_lock:
+            if self._stats_loaded:
+                return
+            await self.get_stats()
+            self._stats_loaded = True
 
     async def to_str(self) -> str:
         """
@@ -347,7 +396,10 @@ Languages:
 
                 for lang in repo.get("languages", {}).get("edges", []):
                     name = lang.get("node", {}).get("name", "Other")
-                    languages = await self.languages
+                    # Read the field directly: going through the property would
+                    # re-enter _ensure_stats() and deadlock on the lock this
+                    # call already holds
+                    languages = self._languages
                     if name.lower() in exclude_langs_lower:
                         continue
                     if name in languages:
@@ -383,9 +435,7 @@ Languages:
         """
         :return: GitHub user's name (e.g., Jacob Strieb)
         """
-        if self._name is not None:
-            return self._name
-        await self.get_stats()
+        await self._ensure_stats()
         assert self._name is not None
         return self._name
 
@@ -394,9 +444,7 @@ Languages:
         """
         :return: total number of stargazers on user's repos
         """
-        if self._stargazers is not None:
-            return self._stargazers
-        await self.get_stats()
+        await self._ensure_stats()
         assert self._stargazers is not None
         return self._stargazers
 
@@ -405,9 +453,7 @@ Languages:
         """
         :return: total number of forks on user's repos
         """
-        if self._forks is not None:
-            return self._forks
-        await self.get_stats()
+        await self._ensure_stats()
         assert self._forks is not None
         return self._forks
 
@@ -416,9 +462,7 @@ Languages:
         """
         :return: summary of languages used by the user
         """
-        if self._languages is not None:
-            return self._languages
-        await self.get_stats()
+        await self._ensure_stats()
         assert self._languages is not None
         return self._languages
 
@@ -427,10 +471,8 @@ Languages:
         """
         :return: summary of languages used by the user, with proportional usage
         """
-        if self._languages is None:
-            await self.get_stats()
-            assert self._languages is not None
-
+        await self._ensure_stats()
+        assert self._languages is not None
         return {k: v.get("prop", 0) for (k, v) in self._languages.items()}
 
     @property
@@ -438,9 +480,7 @@ Languages:
         """
         :return: list of names of user's repos
         """
-        if self._repos is not None:
-            return self._repos
-        await self.get_stats()
+        await self._ensure_stats()
         assert self._repos is not None
         return self._repos
 
@@ -481,8 +521,16 @@ Languages:
             return self._lines_changed
         additions = 0
         deletions = 0
-        for repo in await self.repos:
-            r = await self.queries.query_rest(f"/repos/{repo}/stats/contributors")
+        # Queries caps itself at ten connections, so asking for every
+        # repository at once turns a serial walk of ~50 repositories into a
+        # handful of rounds instead of one request after the other
+        results = await asyncio.gather(
+            *[
+                self.queries.query_rest(f"/repos/{repo}/stats/contributors")
+                for repo in await self.repos
+            ]
+        )
+        for r in results:
             for author_obj in r:
                 # Handle malformed response from the API by skipping this repo
                 if not isinstance(author_obj, dict) or not isinstance(
@@ -510,8 +558,13 @@ Languages:
             return self._views
 
         total = 0
-        for repo in await self.repos:
-            r = await self.queries.query_rest(f"/repos/{repo}/traffic/views")
+        results = await asyncio.gather(
+            *[
+                self.queries.query_rest(f"/repos/{repo}/traffic/views")
+                for repo in await self.repos
+            ]
+        )
+        for r in results:
             for view in r.get("views", []):
                 total += view.get("count", 0)
 

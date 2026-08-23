@@ -2,7 +2,6 @@ name: Generate Stats Images
 
 on:
   push:
-    branches: [ master ]
   schedule:
     - cron: "5 0 * * *"
   workflow_dispatch:
@@ -15,10 +14,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@v7
 
     - name: Set up Python
-      uses: actions/setup-python@v5
+      uses: actions/setup-python@v7
       with:
         python-version: '3.12'
         cache: 'pip'
@@ -32,11 +31,13 @@ jobs:
         ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
         GITHUB_ACTOR: ${{ github.actor }}
         EXCLUDED: ${{ secrets.EXCLUDED }}
-        EXCLUDED_LANGS: ${{ secrets.EXCLUDED_LANGS }}
+        # Notebooks count their whole JSON payload and Roff is almost
+        # always vendored man pages, so both drown out real work.
+        EXCLUDED_LANGS: ${{ secrets.EXCLUDED_LANGS || 'Jupyter Notebook,Roff' }}
         EXCLUDE_FORKED_REPOS: false
 
     - name: Commit changes
-      uses: stefanzweifel/git-auto-commit-action@v5
+      uses: stefanzweifel/git-auto-commit-action@v7
       with:
         commit_message: "Update generated files"
         file_pattern: "generated/*.svg"
