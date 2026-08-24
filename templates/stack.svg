@@ -1,40 +1,47 @@
 <svg width="940" height="226" viewBox="0 0 940 226" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Tech stack">
 <style>
 @font-face {
-  font-family: "Space Grotesk";
+  font-family: "JetBrains Mono";
   font-style: normal;
-  font-weight: 700;
-  src: url("data:font/woff2;base64,{{ font }}") format("woff2");
+  font-weight: 400;
+  src: url("data:font/woff2;base64,{{ mono_regular }}") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 600;
+  src: url("data:font/woff2;base64,{{ mono_semibold }}") format("woff2");
 }
 
 .kicker {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   fill: {{ accent }};
 }
 
 .title {
-  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: "Iowan Old Style", Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
   fill: {{ fg }};
 }
 
 .label {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10px;
+  font-weight: 400;
   letter-spacing: 0.06em;
   fill: {{ muted }};
 }
 
 .item {
-  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  font-weight: 400;
   fill: {{ fg }};
 }
 
@@ -43,11 +50,11 @@
 }
 </style>
 
-<rect x="0.5" y="0.5" width="939" height="225" rx="12" fill="{{ bg }}" stroke="{{ border }}" />
+<rect x="0.5" y="0.5" width="939" height="225" rx="3" fill="{{ bg }}" stroke="{{ border }}" />
 
 <text class="kicker" x="28" y="34">STACK</text>
-<text class="title" x="28" y="58">Edge to cloud</text>
-<line x1="28" y1="74.5" x2="912" y2="74.5" stroke="{{ border }}" stroke-width="1" />
+<text class="title" x="28" y="60">Edge to cloud</text>
+<line x1="28" y1="76.5" x2="912" y2="76.5" stroke="{{ border }}" stroke-width="1" />
 
 {{ rows }}
 </svg>

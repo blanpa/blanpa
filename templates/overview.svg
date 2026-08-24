@@ -1,58 +1,66 @@
 <svg width="460" height="200" viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="GitHub statistics for {{ name }}">
 <style>
 @font-face {
-  font-family: "Space Grotesk";
+  font-family: "JetBrains Mono";
   font-style: normal;
-  font-weight: 700;
-  src: url("data:font/woff2;base64,{{ font }}") format("woff2");
+  font-weight: 400;
+  src: url("data:font/woff2;base64,{{ mono_regular }}") format("woff2");
+}
+
+@font-face {
+  font-family: "JetBrains Mono";
+  font-style: normal;
+  font-weight: 600;
+  src: url("data:font/woff2;base64,{{ mono_semibold }}") format("woff2");
 }
 
 .kicker {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10px;
   font-weight: 600;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.06em;
   fill: {{ accent }};
 }
 
 .title {
-  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  font-size: 19px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
+  font-family: "Iowan Old Style", Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
+  font-size: 21px;
+  font-weight: 600;
+  letter-spacing: -0.005em;
   fill: {{ fg }};
 }
 
 .value {
-  font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
-  font-size: 26px;
-  font-weight: 700;
-  letter-spacing: -0.01em;
-  fill: {{ accent }};
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 25px;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  fill: {{ fg }};
   font-variant-numeric: tabular-nums;
   font-feature-settings: "tnum" 1;
 }
 
 .label {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 10px;
+  font-weight: 400;
   letter-spacing: 0.06em;
   fill: {{ muted }};
 }
 </style>
 
-<rect x="0.5" y="0.5" width="459" height="199" rx="12" fill="{{ bg }}" stroke="{{ border }}" />
+<rect x="0.5" y="0.5" width="459" height="199" rx="3" fill="{{ bg }}" stroke="{{ border }}" />
 
 <text class="kicker" x="28" y="34">GITHUB STATS</text>
-<text class="title" x="28" y="58">{{ name }}</text>
-<line x1="28" y1="74.5" x2="432" y2="74.5" stroke="{{ border }}" stroke-width="1" />
+<text class="title" x="28" y="60">{{ name }}</text>
+<line x1="28" y1="76.5" x2="432" y2="76.5" stroke="{{ border }}" stroke-width="1" />
 
-<text class="value" x="28" y="112">{{ stars }}</text>
-<text class="label" x="28" y="130">STARS</text>
-<text class="value" x="172" y="112">{{ forks }}</text>
-<text class="label" x="172" y="130">FORKS</text>
-<text class="value" x="316" y="112">{{ repos }}</text>
-<text class="label" x="316" y="130">REPOSITORIES</text>
+<text class="value" x="28" y="113">{{ stars }}</text>
+<text class="label" x="28" y="131">STARS</text>
+<text class="value" x="172" y="113">{{ forks }}</text>
+<text class="label" x="172" y="131">FORKS</text>
+<text class="value" x="316" y="113">{{ repos }}</text>
+<text class="label" x="316" y="131">REPOSITORIES</text>
 
 <text class="value" x="28" y="170">{{ contributions }}</text>
 <text class="label" x="28" y="188">CONTRIBUTIONS</text>

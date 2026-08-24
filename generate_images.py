@@ -19,26 +19,31 @@ from github_stats import Stats
 # so the light theme writes "overview.svg" and the dark one "overview-dark.svg".
 THEMES: Dict[str, Dict[str, str]] = {
     "": {
-        "bg": "#fafafa",
-        "fg": "#1c2227",
-        "muted": "#5a5f62",
-        "accent": "#007a63",
-        "border": "#e6e6e6",
-        "track": "#e6e6e6",
+        "bg": "#faf8f4",
+        "fg": "#1b1a17",
+        "muted": "#8a857a",
+        "accent": "#9c3d18",
+        "border": "#e2ddd3",
+        "track": "#e2ddd3",
     },
     "-dark": {
-        "bg": "#14181e",
-        "fg": "#e6edf3",
-        "muted": "#abb1b7",
-        "accent": "#00c8a5",
-        "border": "#2c2f35",
-        "track": "#2c2f35",
+        "bg": "#16171a",
+        "fg": "#e7e4de",
+        "muted": "#6e6a63",
+        "accent": "#d9744a",
+        "border": "#2c2d31",
+        "track": "#2c2d31",
     },
 }
 
-# Embedded so the display font survives the <img> context GitHub renders the
-# cards in, where no external resource is ever fetched
-DISPLAY_FONT = "assets/space-grotesk-700.woff2"
+# Embedded so the label and figure font survives the <img> context GitHub
+# renders the cards in, where no external resource is ever fetched. The
+# headings fall back to the same system serif stack the site uses, so nothing
+# has to be shipped for them.
+MONO_FONTS: Dict[str, str] = {
+    "mono_regular": "assets/jetbrains-mono-400.woff2",
+    "mono_semibold": "assets/jetbrains-mono-600.woff2",
+}
 
 # Languages listed individually before the remainder is folded into "Other".
 # The legend is laid out as two columns of three, so six entries fit exactly.
@@ -91,7 +96,7 @@ LEGEND_TOP = 130
 LEGEND_ROW_HEIGHT = 24
 LEGEND_ROWS = 3
 LEGEND_COLUMN_WIDTH = 212
-STACK_TOP = 104
+STACK_TOP = 106
 STACK_ROW_HEIGHT = 32
 STACK_ITEMS_LEFT = 168
 
@@ -118,7 +123,7 @@ def escape(text: str) -> str:
 
 def compact(value: int) -> str:
     """
-    Shorten large numbers so they stay legible at 26px: 525070 becomes 525K
+    Shorten large numbers so they stay legible at 25px: 525070 becomes 525K
     :param value: number to format
     :return: formatted number
     """
@@ -129,12 +134,15 @@ def compact(value: int) -> str:
     return f"{value:,}"
 
 
-def embedded_font() -> str:
+def embedded_fonts() -> Dict[str, str]:
     """
-    :return: the display font, base64 encoded for use in a data URI
+    :return: every embedded font, base64 encoded for use in a data URI
     """
-    with open(DISPLAY_FONT, "rb") as f:
-        return base64.b64encode(f.read()).decode("ascii")
+    fonts = {}
+    for placeholder, path in MONO_FONTS.items():
+        with open(path, "rb") as f:
+            fonts[placeholder] = base64.b64encode(f.read()).decode("ascii")
+    return fonts
 
 
 def render(template: str, values: Dict[str, str]) -> str:
@@ -160,10 +168,10 @@ def write_themed(template_name: str, output_name: str, values: Dict[str, str]) -
         template = f.read()
 
     generate_output_folder()
-    font = embedded_font()
+    fonts = embedded_fonts()
     for suffix, palette in THEMES.items():
         with open(f"generated/{output_name}{suffix}.svg", "w") as f:
-            f.write(render(template, {**values, **palette, "font": font}))
+            f.write(render(template, {**values, **palette, **fonts}))
 
 
 ################################################################################
@@ -216,8 +224,8 @@ async def generate_languages(s: Stats) -> None:
     for _, color, prop in entries:
         width = BAR_WIDTH * prop / 100
         bar += (
-            f'<rect x="{offset:.2f}" y="92" width="{width:.2f}" '
-            f'height="10" fill="{color}" />\n'
+            f'<rect x="{offset:.2f}" y="94" width="{width:.2f}" '
+            f'height="8" fill="{color}" />\n'
         )
         offset += width
 
@@ -227,8 +235,9 @@ async def generate_languages(s: Stats) -> None:
         x = CARD_LEFT + column * LEGEND_COLUMN_WIDTH
         y = LEGEND_TOP + row * LEGEND_ROW_HEIGHT
         legend += (
-            f'<circle cx="{x + 5}" cy="{y - 4}" r="4.5" fill="{color}" />\n'
-            f'<text class="lang" x="{x + 18}" y="{y}">{escape(lang)}</text>\n'
+            f'<rect x="{x}" y="{y - 8}" width="8" height="8" rx="2" '
+            f'fill="{color}" />\n'
+            f'<text class="lang" x="{x + 17}" y="{y}">{escape(lang)}</text>\n'
             f'<text class="pct" x="{x + 192}" y="{y}" '
             f'text-anchor="end">{prop:.1f}%</text>\n'
         )
