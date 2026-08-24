@@ -45,6 +45,45 @@ DISPLAY_FONT = "assets/space-grotesk-700.woff2"
 MAX_LANGUAGES = 5
 OTHER_COLOR = "#8b949e"
 
+# The stack card is the one hand-maintained image: nothing about it comes from
+# the API, so the rows live here and the template holds only the layout.
+STACK: List[Tuple[str, Tuple[str, ...]]] = [
+    (
+        "Protocols",
+        (
+            "OPC-UA",
+            "Siemens S7",
+            "EtherNet/IP",
+            "Modbus",
+            "MQTT",
+            "Sparkplug B",
+            "NATS",
+            "Kafka",
+        ),
+    ),
+    (
+        "Platform",
+        (
+            "Node-RED",
+            "Docker",
+            "Kubernetes",
+            "Ansible",
+            "Grafana",
+            "Redis",
+            "PostgreSQL",
+            "TimescaleDB",
+        ),
+    ),
+    (
+        "Languages & tools",
+        ("Python", "JavaScript", "Go", "C", "Bash", "Linux", "Debian", "Git"),
+    ),
+    (
+        "Data & ML",
+        ("pandas", "scikit-learn", "PyTorch", "TensorFlow", "OpenCV"),
+    ),
+]
+
 # Card geometry, mirrored from the templates
 CARD_LEFT = 28
 BAR_WIDTH = 404
@@ -52,6 +91,9 @@ LEGEND_TOP = 130
 LEGEND_ROW_HEIGHT = 24
 LEGEND_ROWS = 3
 LEGEND_COLUMN_WIDTH = 212
+STACK_TOP = 104
+STACK_ROW_HEIGHT = 32
+STACK_ITEMS_LEFT = 168
 
 
 ################################################################################
@@ -194,6 +236,30 @@ async def generate_languages(s: Stats) -> None:
     write_themed("languages.svg", "languages", {"bar": bar, "legend": legend})
 
 
+def generate_stack() -> None:
+    """
+    Generate an SVG card listing the tech stack
+
+    The items of a row are laid out as tspans so the renderer flows them, which
+    keeps the card free of any font measuring on our side.
+    """
+    rows = ""
+    for i, (label, items) in enumerate(STACK):
+        y = STACK_TOP + i * STACK_ROW_HEIGHT
+        # Non-breaking spaces: a plain space around the separator would be
+        # collapsed away by the renderer's default whitespace handling.
+        line = '<tspan class="sep">&#160;·&#160;</tspan>'.join(
+            f"<tspan>{escape(item)}</tspan>" for item in items
+        )
+        rows += (
+            f'<text class="label" x="{CARD_LEFT}" y="{y}">'
+            f"{escape(label.upper())}</text>\n"
+            f'<text class="item" x="{STACK_ITEMS_LEFT}" y="{y}">{line}</text>\n'
+        )
+
+    write_themed("stack.svg", "stack", {"rows": rows})
+
+
 ################################################################################
 # Main Function
 ################################################################################
@@ -203,6 +269,9 @@ async def main() -> None:
     """
     Generate all badges
     """
+    # Needs no API data, so it is rendered before the token is even required
+    generate_stack()
+
     access_token = os.getenv("ACCESS_TOKEN")
     if not access_token:
         raise Exception("A personal access token is required to proceed!")
