@@ -61,24 +61,24 @@
 
 <g clip-path="url(#bar-clip)">
 <rect x="28" y="94" width="404" height="8" fill="#e2ddd3" />
-<rect x="28.00" y="94" width="163.76" height="8" fill="#f1e05a" />
-<rect x="191.76" y="94" width="66.75" height="8" fill="#3572A5" />
-<rect x="258.51" y="94" width="47.11" height="8" fill="#e34c26" />
-<rect x="305.62" y="94" width="38.52" height="8" fill="#3178c6" />
-<rect x="344.14" y="94" width="37.27" height="8" fill="#00ADD8" />
-<rect x="381.41" y="94" width="50.59" height="8" fill="#8b949e" />
+<rect x="28.00" y="94" width="163.22" height="8" fill="#f1e05a" />
+<rect x="191.22" y="94" width="67.76" height="8" fill="#3572A5" />
+<rect x="258.99" y="94" width="46.98" height="8" fill="#e34c26" />
+<rect x="305.96" y="94" width="38.40" height="8" fill="#3178c6" />
+<rect x="344.36" y="94" width="37.15" height="8" fill="#00ADD8" />
+<rect x="381.51" y="94" width="50.49" height="8" fill="#8b949e" />
 
 </g>
 
 <rect x="28" y="122" width="8" height="8" rx="2" fill="#f1e05a" />
 <text class="lang" x="45" y="130">JavaScript</text>
-<text class="pct" x="220" y="130" text-anchor="end">40.5%</text>
+<text class="pct" x="220" y="130" text-anchor="end">40.4%</text>
 <rect x="28" y="146" width="8" height="8" rx="2" fill="#3572A5" />
 <text class="lang" x="45" y="154">Python</text>
-<text class="pct" x="220" y="154" text-anchor="end">16.5%</text>
+<text class="pct" x="220" y="154" text-anchor="end">16.8%</text>
 <rect x="28" y="170" width="8" height="8" rx="2" fill="#e34c26" />
 <text class="lang" x="45" y="178">HTML</text>
-<text class="pct" x="220" y="178" text-anchor="end">11.7%</text>
+<text class="pct" x="220" y="178" text-anchor="end">11.6%</text>
 <rect x="240" y="122" width="8" height="8" rx="2" fill="#3178c6" />
 <text class="lang" x="257" y="130">TypeScript</text>
 <text class="pct" x="432" y="130" text-anchor="end">9.5%</text>
