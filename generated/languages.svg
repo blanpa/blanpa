@@ -61,12 +61,12 @@
 
 <g clip-path="url(#bar-clip)">
 <rect x="28" y="94" width="404" height="8" fill="#e2ddd3" />
-<rect x="28.00" y="94" width="163.22" height="8" fill="#f1e05a" />
-<rect x="191.22" y="94" width="67.76" height="8" fill="#3572A5" />
-<rect x="258.99" y="94" width="46.98" height="8" fill="#e34c26" />
-<rect x="305.96" y="94" width="38.40" height="8" fill="#3178c6" />
-<rect x="344.36" y="94" width="37.15" height="8" fill="#00ADD8" />
-<rect x="381.51" y="94" width="50.49" height="8" fill="#8b949e" />
+<rect x="28.00" y="94" width="163.09" height="8" fill="#f1e05a" />
+<rect x="191.09" y="94" width="67.74" height="8" fill="#3572A5" />
+<rect x="258.83" y="94" width="46.93" height="8" fill="#e34c26" />
+<rect x="305.76" y="94" width="38.37" height="8" fill="#3178c6" />
+<rect x="344.13" y="94" width="37.12" height="8" fill="#00ADD8" />
+<rect x="381.25" y="94" width="50.75" height="8" fill="#8b949e" />
 
 </g>
 
@@ -87,6 +87,6 @@
 <text class="pct" x="432" y="154" text-anchor="end">9.2%</text>
 <rect x="240" y="170" width="8" height="8" rx="2" fill="#8b949e" />
 <text class="lang" x="257" y="178">Other</text>
-<text class="pct" x="432" y="178" text-anchor="end">12.5%</text>
+<text class="pct" x="432" y="178" text-anchor="end">12.6%</text>
 
 </svg>
