@@ -1,7 +1,6 @@
 #!/usr/bin/python3
 
 import asyncio
-import base64
 import os
 from typing import Dict, List, Tuple
 
@@ -17,32 +16,31 @@ from github_stats import Stats
 # One file is rendered per palette; the README picks the matching one through
 # <picture> and prefers-color-scheme. The suffix becomes part of the filename,
 # so the light theme writes "overview.svg" and the dark one "overview-dark.svg".
+# The values are Primer tokens, so the cards sit on a GitHub page as if they
+# were part of it: canvas.default, canvas.subtle, fg.default, fg.muted,
+# border.default, the neutral fill GitHub uses behind a language bar, and the
+# accent pair a topic tag is drawn in.
 THEMES: Dict[str, Dict[str, str]] = {
     "": {
-        "bg": "#faf8f4",
-        "fg": "#1b1a17",
-        "muted": "#8a857a",
-        "accent": "#9c3d18",
-        "border": "#e2ddd3",
-        "track": "#e2ddd3",
+        "bg": "#ffffff",
+        "subtle": "#f6f8fa",
+        "fg": "#1f2328",
+        "muted": "#59636e",
+        "border": "#d1d9e0",
+        "track": "#eaeef2",
+        "accent": "#0969da",
+        "accent_bg": "#ddf4ff",
     },
     "-dark": {
-        "bg": "#16171a",
-        "fg": "#e7e4de",
-        "muted": "#6e6a63",
-        "accent": "#d9744a",
-        "border": "#2c2d31",
-        "track": "#2c2d31",
+        "bg": "#0d1117",
+        "subtle": "#151b23",
+        "fg": "#f0f6fc",
+        "muted": "#9198a1",
+        "border": "#3d444d",
+        "track": "#30363d",
+        "accent": "#4493f8",
+        "accent_bg": "#121d2f",
     },
-}
-
-# Embedded so the label and figure font survives the <img> context GitHub
-# renders the cards in, where no external resource is ever fetched. The
-# headings fall back to the same system serif stack the site uses, so nothing
-# has to be shipped for them.
-MONO_FONTS: Dict[str, str] = {
-    "mono_regular": "assets/jetbrains-mono-400.woff2",
-    "mono_semibold": "assets/jetbrains-mono-600.woff2",
 }
 
 # Languages listed individually before the remainder is folded into "Other".
@@ -89,16 +87,25 @@ STACK: List[Tuple[str, Tuple[str, ...]]] = [
     ),
 ]
 
-# Card geometry, mirrored from the templates
-CARD_LEFT = 28
-BAR_WIDTH = 404
-LEGEND_TOP = 130
-LEGEND_ROW_HEIGHT = 24
+# Card geometry, mirrored from the templates. The 16px padding and the 44px
+# header strip are the ones Primer's Box uses.
+CARD_LEFT = 16
+BAR_Y = 64
+BAR_WIDTH = 428
+LEGEND_TOP = 100
+LEGEND_ROW_HEIGHT = 28
 LEGEND_ROWS = 3
-LEGEND_COLUMN_WIDTH = 212
-STACK_TOP = 106
+LEGEND_COLUMN_WIDTH = 206
+LEGEND_COLUMN_GAP = 16
+STACK_TOP = 60
 STACK_ROW_HEIGHT = 32
-STACK_ITEMS_LEFT = 168
+STACK_ITEMS_LEFT = 152
+
+# A stack item is drawn as the pill GitHub puts a repository topic in: 24px
+# tall, fully rounded, 10px of padding on either side of a 12px label.
+TAG_HEIGHT = 24
+TAG_PADDING = 10
+TAG_GAP = 6
 
 
 ################################################################################
@@ -123,7 +130,7 @@ def escape(text: str) -> str:
 
 def compact(value: int) -> str:
     """
-    Shorten large numbers so they stay legible at 25px: 525070 becomes 525K
+    Shorten large numbers so a row stays on one line: 525070 becomes 525K
     :param value: number to format
     :return: formatted number
     """
@@ -134,15 +141,33 @@ def compact(value: int) -> str:
     return f"{value:,}"
 
 
-def embedded_fonts() -> Dict[str, str]:
+# Advance widths per 1000 units for the medium weight of a Helvetica-like face,
+# which is close enough to the system stack the cards render in to size a pill
+# around its label. The text is centred inside the pill, so what little the
+# estimate is off by lands in the padding on both sides rather than clipping.
+CHAR_WIDTHS: Dict[str, int] = {
+    " ": 278, "-": 333, ".": 278, "/": 278, "&": 722, "+": 584,
+    "0": 556, "1": 556, "2": 556, "3": 556, "4": 556, "5": 556,
+    "6": 556, "7": 556, "8": 556, "9": 556,
+    "A": 722, "B": 722, "C": 722, "D": 722, "E": 667, "F": 611, "G": 778,
+    "H": 722, "I": 278, "J": 556, "K": 722, "L": 611, "M": 833, "N": 722,
+    "O": 778, "P": 667, "Q": 778, "R": 722, "S": 667, "T": 611, "U": 722,
+    "V": 667, "W": 944, "X": 667, "Y": 667, "Z": 611,
+    "a": 556, "b": 611, "c": 556, "d": 611, "e": 556, "f": 333, "g": 611,
+    "h": 611, "i": 278, "j": 278, "k": 556, "l": 278, "m": 889, "n": 611,
+    "o": 611, "p": 611, "q": 611, "r": 389, "s": 556, "t": 333, "u": 611,
+    "v": 556, "w": 778, "x": 556, "y": 556, "z": 500,
+}
+
+
+def text_width(text: str, size: int) -> float:
     """
-    :return: every embedded font, base64 encoded for use in a data URI
+    Estimate how wide a string renders, so a pill can be sized around it
+    :param text: string to measure
+    :param size: font size in pixels
+    :return: width in pixels
     """
-    fonts = {}
-    for placeholder, path in MONO_FONTS.items():
-        with open(path, "rb") as f:
-            fonts[placeholder] = base64.b64encode(f.read()).decode("ascii")
-    return fonts
+    return sum(CHAR_WIDTHS.get(c, 611) for c in text) * size / 1000
 
 
 def render(template: str, values: Dict[str, str]) -> str:
@@ -168,10 +193,9 @@ def write_themed(template_name: str, output_name: str, values: Dict[str, str]) -
         template = f.read()
 
     generate_output_folder()
-    fonts = embedded_fonts()
     for suffix, palette in THEMES.items():
         with open(f"generated/{output_name}{suffix}.svg", "w") as f:
-            f.write(render(template, {**values, **palette, **fonts}))
+            f.write(render(template, {**values, **palette}))
 
 
 ################################################################################
@@ -224,7 +248,7 @@ async def generate_languages(s: Stats) -> None:
     for _, color, prop in entries:
         width = BAR_WIDTH * prop / 100
         bar += (
-            f'<rect x="{offset:.2f}" y="94" width="{width:.2f}" '
+            f'<rect x="{offset:.2f}" y="{BAR_Y}" width="{width:.2f}" '
             f'height="8" fill="{color}" />\n'
         )
         offset += width
@@ -232,13 +256,14 @@ async def generate_languages(s: Stats) -> None:
     legend = ""
     for i, (lang, color, prop) in enumerate(entries):
         column, row = divmod(i, LEGEND_ROWS)
-        x = CARD_LEFT + column * LEGEND_COLUMN_WIDTH
+        x = CARD_LEFT + column * (LEGEND_COLUMN_WIDTH + LEGEND_COLUMN_GAP)
         y = LEGEND_TOP + row * LEGEND_ROW_HEIGHT
+        # A filled dot in the language colour, the same marker GitHub puts in
+        # front of a language everywhere it lists one
         legend += (
-            f'<rect x="{x}" y="{y - 8}" width="8" height="8" rx="2" '
-            f'fill="{color}" />\n'
-            f'<text class="lang" x="{x + 17}" y="{y}">{escape(lang)}</text>\n'
-            f'<text class="pct" x="{x + 192}" y="{y}" '
+            f'<circle cx="{x + 5}" cy="{y - 4}" r="5" fill="{color}" />\n'
+            f'<text class="lang" x="{x + 18}" y="{y}">{escape(lang)}</text>\n'
+            f'<text class="pct" x="{x + LEGEND_COLUMN_WIDTH}" y="{y}" '
             f'text-anchor="end">{prop:.1f}%</text>\n'
         )
 
@@ -249,22 +274,28 @@ def generate_stack() -> None:
     """
     Generate an SVG card listing the tech stack
 
-    The items of a row are laid out as tspans so the renderer flows them, which
-    keeps the card free of any font measuring on our side.
+    Every item becomes a topic tag, the pill GitHub lists a repository's topics
+    in, so the row reads as part of the page rather than as a caption.
     """
     rows = ""
     for i, (label, items) in enumerate(STACK):
-        y = STACK_TOP + i * STACK_ROW_HEIGHT
-        # Non-breaking spaces: a plain space around the separator would be
-        # collapsed away by the renderer's default whitespace handling.
-        line = '<tspan class="sep">&#160;·&#160;</tspan>'.join(
-            f"<tspan>{escape(item)}</tspan>" for item in items
-        )
-        rows += (
-            f'<text class="label" x="{CARD_LEFT}" y="{y}">'
-            f"{escape(label.upper())}</text>\n"
-            f'<text class="item" x="{STACK_ITEMS_LEFT}" y="{y}">{line}</text>\n'
-        )
+        top = STACK_TOP + i * STACK_ROW_HEIGHT
+        baseline = top + 16
+        rows += f'<text class="label" x="{CARD_LEFT}" y="{baseline}">{escape(label)}</text>\n'
+
+        # The pill fill stays a placeholder: write_themed substitutes the rows
+        # before the palette, so it is resolved along with the template's own.
+        x = float(STACK_ITEMS_LEFT)
+        for item in items:
+            width = round(text_width(item, 12)) + 2 * TAG_PADDING
+            rows += (
+                f'<rect x="{x:.1f}" y="{top}" width="{width}" '
+                f'height="{TAG_HEIGHT}" rx="{TAG_HEIGHT / 2}" '
+                f'fill="{{{{ accent_bg }}}}" />\n'
+                f'<text class="topic" x="{x + width / 2:.1f}" y="{baseline}" '
+                f'text-anchor="middle">{escape(item)}</text>\n'
+            )
+            x += width + TAG_GAP
 
     write_themed("stack.svg", "stack", {"rows": rows})
 

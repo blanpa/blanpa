@@ -1,68 +1,61 @@
-<svg width="460" height="200" viewBox="0 0 460 200" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Most used languages">
+<svg width="460" height="180" viewBox="0 0 460 180" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Most used languages">
 <style>
-@font-face {
-  font-family: "JetBrains Mono";
-  font-style: normal;
-  font-weight: 400;
-  src: url("data:font/woff2;base64,{{ mono_regular }}") format("woff2");
-}
-
-@font-face {
-  font-family: "JetBrains Mono";
-  font-style: normal;
+.heading {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-size: 14px;
   font-weight: 600;
-  src: url("data:font/woff2;base64,{{ mono_semibold }}") format("woff2");
-}
-
-.kicker {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.06em;
-  fill: {{ accent }};
-}
-
-.title {
-  font-family: "Iowan Old Style", Charter, "Bitstream Charter", "Sitka Text", Cambria, Georgia, serif;
-  font-size: 21px;
-  font-weight: 600;
-  letter-spacing: -0.005em;
   fill: {{ fg }};
 }
 
-.lang {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
+.meta {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-size: 12px;
   font-weight: 400;
+  fill: {{ muted }};
+}
+
+.lang {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-size: 12px;
+  font-weight: 600;
   fill: {{ fg }};
 }
 
 .pct {
-  font-family: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
-  font-size: 11px;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans", Helvetica, Arial, sans-serif;
+  font-size: 12px;
   font-weight: 400;
   fill: {{ muted }};
   font-variant-numeric: tabular-nums;
-  font-feature-settings: "tnum" 1;
+}
+
+.octicon {
+  fill: {{ muted }};
 }
 </style>
 
 <defs>
 <clipPath id="bar-clip">
-<rect x="28" y="94" width="404" height="8" rx="2" />
+<rect x="16" y="64" width="428" height="8" rx="4" />
 </clipPath>
 </defs>
 
-<rect x="0.5" y="0.5" width="459" height="199" rx="3" fill="{{ bg }}" stroke="{{ border }}" />
+<rect x="0.5" y="0.5" width="459" height="179" rx="6" fill="{{ bg }}" />
+<path d="M0.5 6.5A6 6 0 0 1 6.5 0.5h447A6 6 0 0 1 459.5 6.5V44.5H0.5Z" fill="{{ subtle }}" />
+<line x1="0.5" y1="44.5" x2="459.5" y2="44.5" stroke="{{ border }}" stroke-width="1" vector-effect="non-scaling-stroke" />
 
-<text class="kicker" x="28" y="34">LANGUAGES</text>
-<text class="title" x="28" y="60">By file size</text>
-<line x1="28" y1="76.5" x2="432" y2="76.5" stroke="{{ border }}" stroke-width="1" />
+<g class="octicon" transform="translate(16 14)">
+<path d="m11.28 3.22 4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.749.749 0 0 1-1.275-.326.749.749 0 0 1 .215-.734L13.94 8l-3.72-3.72a.749.749 0 0 1 .326-1.275.749.749 0 0 1 .734.215Zm-6.56 0a.751.751 0 0 1 1.042.018.751.751 0 0 1 .018 1.042L2.06 8l3.72 3.72a.749.749 0 0 1-.326 1.275.749.749 0 0 1-.734-.215L.47 8.53a.75.75 0 0 1 0-1.06Z" />
+</g>
+<text class="heading" x="40" y="27">Languages</text>
+<text class="meta" x="444" y="27" text-anchor="end">By file size</text>
 
 <g clip-path="url(#bar-clip)">
-<rect x="28" y="94" width="404" height="8" fill="{{ track }}" />
+<rect x="16" y="64" width="428" height="8" fill="{{ track }}" />
 {{ bar }}
 </g>
 
 {{ legend }}
+
+<rect x="0.5" y="0.5" width="459" height="179" rx="6" fill="none" stroke="{{ border }}" vector-effect="non-scaling-stroke" />
 </svg>
