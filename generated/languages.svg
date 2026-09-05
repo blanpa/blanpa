@@ -52,12 +52,12 @@
 
 <g clip-path="url(#bar-clip)">
 <rect x="16" y="64" width="428" height="8" fill="#eaeef2" />
-<rect x="16.00" y="64" width="161.23" height="8" fill="#f1e05a" />
-<rect x="177.23" y="64" width="87.70" height="8" fill="#3572A5" />
-<rect x="264.94" y="64" width="46.24" height="8" fill="#e34c26" />
-<rect x="311.18" y="64" width="41.65" height="8" fill="#3178c6" />
-<rect x="352.82" y="64" width="34.38" height="8" fill="#00ADD8" />
-<rect x="387.20" y="64" width="56.80" height="8" fill="#8b949e" />
+<rect x="16.00" y="64" width="161.24" height="8" fill="#f1e05a" />
+<rect x="177.24" y="64" width="86.53" height="8" fill="#3572A5" />
+<rect x="263.77" y="64" width="46.33" height="8" fill="#e34c26" />
+<rect x="310.10" y="64" width="43.94" height="8" fill="#3178c6" />
+<rect x="354.04" y="64" width="33.92" height="8" fill="#00ADD8" />
+<rect x="387.96" y="64" width="56.04" height="8" fill="#8b949e" />
 
 </g>
 
@@ -66,19 +66,19 @@
 <text class="pct" x="222" y="100" text-anchor="end">37.7%</text>
 <circle cx="21" cy="124" r="5" fill="#3572A5" />
 <text class="lang" x="34" y="128">Python</text>
-<text class="pct" x="222" y="128" text-anchor="end">20.5%</text>
+<text class="pct" x="222" y="128" text-anchor="end">20.2%</text>
 <circle cx="21" cy="152" r="5" fill="#e34c26" />
 <text class="lang" x="34" y="156">HTML</text>
 <text class="pct" x="222" y="156" text-anchor="end">10.8%</text>
 <circle cx="243" cy="96" r="5" fill="#3178c6" />
 <text class="lang" x="256" y="100">TypeScript</text>
-<text class="pct" x="444" y="100" text-anchor="end">9.7%</text>
+<text class="pct" x="444" y="100" text-anchor="end">10.3%</text>
 <circle cx="243" cy="124" r="5" fill="#00ADD8" />
 <text class="lang" x="256" y="128">Go</text>
-<text class="pct" x="444" y="128" text-anchor="end">8.0%</text>
+<text class="pct" x="444" y="128" text-anchor="end">7.9%</text>
 <circle cx="243" cy="152" r="5" fill="#8b949e" />
 <text class="lang" x="256" y="156">Other</text>
-<text class="pct" x="444" y="156" text-anchor="end">13.3%</text>
+<text class="pct" x="444" y="156" text-anchor="end">13.1%</text>
 
 
 <rect x="0.5" y="0.5" width="459" height="179" rx="6" fill="none" stroke="#d1d9e0" vector-effect="non-scaling-stroke" />
