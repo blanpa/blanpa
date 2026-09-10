@@ -52,18 +52,18 @@
 
 <g clip-path="url(#bar-clip)">
 <rect x="16" y="64" width="428" height="8" fill="#30363d" />
-<rect x="16.00" y="64" width="150.05" height="8" fill="#f1e05a" />
-<rect x="166.05" y="64" width="76.87" height="8" fill="#3572A5" />
-<rect x="242.92" y="64" width="58.12" height="8" fill="#3178c6" />
-<rect x="301.04" y="64" width="45.73" height="8" fill="#e34c26" />
-<rect x="346.77" y="64" width="45.56" height="8" fill="#00ADD8" />
-<rect x="392.33" y="64" width="51.67" height="8" fill="#8b949e" />
+<rect x="16.00" y="64" width="150.01" height="8" fill="#f1e05a" />
+<rect x="166.01" y="64" width="76.96" height="8" fill="#3572A5" />
+<rect x="242.97" y="64" width="58.10" height="8" fill="#3178c6" />
+<rect x="301.07" y="64" width="45.73" height="8" fill="#e34c26" />
+<rect x="346.80" y="64" width="45.55" height="8" fill="#00ADD8" />
+<rect x="392.35" y="64" width="51.65" height="8" fill="#8b949e" />
 
 </g>
 
 <circle cx="21" cy="96" r="5" fill="#f1e05a" />
 <text class="lang" x="34" y="100">JavaScript</text>
-<text class="pct" x="222" y="100" text-anchor="end">35.1%</text>
+<text class="pct" x="222" y="100" text-anchor="end">35.0%</text>
 <circle cx="21" cy="124" r="5" fill="#3572A5" />
 <text class="lang" x="34" y="128">Python</text>
 <text class="pct" x="222" y="128" text-anchor="end">18.0%</text>
