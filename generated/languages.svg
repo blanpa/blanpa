@@ -52,30 +52,30 @@
 
 <g clip-path="url(#bar-clip)">
 <rect x="16" y="64" width="428" height="8" fill="#eaeef2" />
-<rect x="16.00" y="64" width="144.13" height="8" fill="#f1e05a" />
-<rect x="160.13" y="64" width="73.79" height="8" fill="#3178c6" />
-<rect x="233.92" y="64" width="68.24" height="8" fill="#3572A5" />
-<rect x="302.16" y="64" width="52.21" height="8" fill="#00ADD8" />
-<rect x="354.36" y="64" width="43.28" height="8" fill="#e34c26" />
-<rect x="397.64" y="64" width="46.36" height="8" fill="#8b949e" />
+<rect x="16.00" y="64" width="147.27" height="8" fill="#f1e05a" />
+<rect x="163.27" y="64" width="72.85" height="8" fill="#3178c6" />
+<rect x="236.11" y="64" width="67.36" height="8" fill="#3572A5" />
+<rect x="303.48" y="64" width="51.54" height="8" fill="#00ADD8" />
+<rect x="355.01" y="64" width="42.95" height="8" fill="#e34c26" />
+<rect x="397.96" y="64" width="46.04" height="8" fill="#8b949e" />
 
 </g>
 
 <circle cx="21" cy="96" r="5" fill="#f1e05a" />
 <text class="lang" x="34" y="100">JavaScript</text>
-<text class="pct" x="222" y="100" text-anchor="end">33.7%</text>
+<text class="pct" x="222" y="100" text-anchor="end">34.4%</text>
 <circle cx="21" cy="124" r="5" fill="#3178c6" />
 <text class="lang" x="34" y="128">TypeScript</text>
-<text class="pct" x="222" y="128" text-anchor="end">17.2%</text>
+<text class="pct" x="222" y="128" text-anchor="end">17.0%</text>
 <circle cx="21" cy="152" r="5" fill="#3572A5" />
 <text class="lang" x="34" y="156">Python</text>
-<text class="pct" x="222" y="156" text-anchor="end">15.9%</text>
+<text class="pct" x="222" y="156" text-anchor="end">15.7%</text>
 <circle cx="243" cy="96" r="5" fill="#00ADD8" />
 <text class="lang" x="256" y="100">Go</text>
-<text class="pct" x="444" y="100" text-anchor="end">12.2%</text>
+<text class="pct" x="444" y="100" text-anchor="end">12.0%</text>
 <circle cx="243" cy="124" r="5" fill="#e34c26" />
 <text class="lang" x="256" y="128">HTML</text>
-<text class="pct" x="444" y="128" text-anchor="end">10.1%</text>
+<text class="pct" x="444" y="128" text-anchor="end">10.0%</text>
 <circle cx="243" cy="152" r="5" fill="#8b949e" />
 <text class="lang" x="256" y="156">Other</text>
 <text class="pct" x="444" y="156" text-anchor="end">10.8%</text>
