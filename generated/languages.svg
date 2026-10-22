@@ -52,30 +52,30 @@
 
 <g clip-path="url(#bar-clip)">
 <rect x="16" y="64" width="428" height="8" fill="#eaeef2" />
-<rect x="16.00" y="64" width="148.93" height="8" fill="#f1e05a" />
-<rect x="164.93" y="64" width="71.99" height="8" fill="#3178c6" />
-<rect x="236.91" y="64" width="66.24" height="8" fill="#3572A5" />
-<rect x="303.16" y="64" width="52.32" height="8" fill="#00ADD8" />
-<rect x="355.48" y="64" width="43.12" height="8" fill="#e34c26" />
-<rect x="398.60" y="64" width="45.40" height="8" fill="#8b949e" />
+<rect x="16.00" y="64" width="147.96" height="8" fill="#f1e05a" />
+<rect x="163.96" y="64" width="72.11" height="8" fill="#3178c6" />
+<rect x="236.07" y="64" width="65.81" height="8" fill="#3572A5" />
+<rect x="301.88" y="64" width="53.80" height="8" fill="#00ADD8" />
+<rect x="355.68" y="64" width="42.84" height="8" fill="#e34c26" />
+<rect x="398.52" y="64" width="45.48" height="8" fill="#8b949e" />
 
 </g>
 
 <circle cx="21" cy="96" r="5" fill="#f1e05a" />
 <text class="lang" x="34" y="100">JavaScript</text>
-<text class="pct" x="222" y="100" text-anchor="end">34.8%</text>
+<text class="pct" x="222" y="100" text-anchor="end">34.6%</text>
 <circle cx="21" cy="124" r="5" fill="#3178c6" />
 <text class="lang" x="34" y="128">TypeScript</text>
 <text class="pct" x="222" y="128" text-anchor="end">16.8%</text>
 <circle cx="21" cy="152" r="5" fill="#3572A5" />
 <text class="lang" x="34" y="156">Python</text>
-<text class="pct" x="222" y="156" text-anchor="end">15.5%</text>
+<text class="pct" x="222" y="156" text-anchor="end">15.4%</text>
 <circle cx="243" cy="96" r="5" fill="#00ADD8" />
 <text class="lang" x="256" y="100">Go</text>
-<text class="pct" x="444" y="100" text-anchor="end">12.2%</text>
+<text class="pct" x="444" y="100" text-anchor="end">12.6%</text>
 <circle cx="243" cy="124" r="5" fill="#e34c26" />
 <text class="lang" x="256" y="128">HTML</text>
-<text class="pct" x="444" y="128" text-anchor="end">10.1%</text>
+<text class="pct" x="444" y="128" text-anchor="end">10.0%</text>
 <circle cx="243" cy="152" r="5" fill="#8b949e" />
 <text class="lang" x="256" y="156">Other</text>
 <text class="pct" x="444" y="156" text-anchor="end">10.6%</text>
