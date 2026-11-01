@@ -165,6 +165,7 @@ class Queries(object):
             direction: DESC
         }},
         isFork: false,
+        privacy: PUBLIC,
         after: {"null" if owned_cursor is None else '"'+ owned_cursor +'"'}
     ) {{
       pageInfo {{
@@ -191,6 +192,7 @@ class Queries(object):
     repositoriesContributedTo(
         first: 100,
         includeUserRepositories: false,
+        privacy: PUBLIC,
         orderBy: {{
             field: UPDATED_AT,
             direction: DESC
@@ -246,16 +248,30 @@ query {
     @staticmethod
     def contribs_by_year(year: str) -> str:
         """
+        The calendar total also counts contributions to private repositories
+        whenever the token can see them, so the contributions are fetched per
+        repository instead, which is what lets the private ones be left out.
+
         :param year: year to query for
         :return: portion of a GraphQL query with desired info for a given year
         """
+        by_repo = """(maxRepositories: 100) {
+        repository { isPrivate }
+        contributions(first: 1) { totalCount }
+      }"""
         return f"""
     year{year}: contributionsCollection(
         from: "{year}-01-01T00:00:00Z",
         to: "{int(year) + 1}-01-01T00:00:00Z"
     ) {{
-      contributionCalendar {{
-        totalContributions
+      commitContributionsByRepository{by_repo}
+      issueContributionsByRepository{by_repo}
+      pullRequestContributionsByRepository{by_repo}
+      pullRequestReviewContributionsByRepository{by_repo}
+      repositoryContributions(first: 100) {{
+        nodes {{
+          repository {{ isPrivate }}
+        }}
       }}
     }}
 """
@@ -487,7 +503,7 @@ Languages:
     @property
     async def total_contributions(self) -> int:
         """
-        :return: count of user's total contributions as defined by GitHub
+        :return: count of user's contributions to public repositories
         """
         if self._total_contributions is not None:
             return self._total_contributions
@@ -507,9 +523,26 @@ Languages:
             .values()
         )
         for year in by_year:
-            self._total_contributions += year.get("contributionCalendar", {}).get(
-                "totalContributions", 0
-            )
+            for field in (
+                "commitContributionsByRepository",
+                "issueContributionsByRepository",
+                "pullRequestContributionsByRepository",
+                "pullRequestReviewContributionsByRepository",
+            ):
+                for entry in year.get(field) or []:
+                    # A repository that cannot be resolved is treated as
+                    # private, so nothing of unknown visibility is counted
+                    if (entry.get("repository") or {}).get("isPrivate", True):
+                        continue
+                    self._total_contributions += entry.get(
+                        "contributions", {}
+                    ).get("totalCount", 0)
+            # Every created repository is one contribution
+            for node in (year.get("repositoryContributions") or {}).get(
+                "nodes"
+            ) or []:
+                if not ((node or {}).get("repository") or {}).get("isPrivate", True):
+                    self._total_contributions += 1
         return cast(int, self._total_contributions)
 
     @property
