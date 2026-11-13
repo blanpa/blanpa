@@ -52,12 +52,12 @@
 
 <g clip-path="url(#bar-clip)">
 <rect x="16" y="64" width="428" height="8" fill="#30363d" />
-<rect x="16.00" y="64" width="215.63" height="8" fill="#f1e05a" />
-<rect x="231.63" y="64" width="87.31" height="8" fill="#3178c6" />
-<rect x="318.94" y="64" width="46.51" height="8" fill="#e34c26" />
-<rect x="365.45" y="64" width="40.67" height="8" fill="#00ADD8" />
-<rect x="406.12" y="64" width="22.89" height="8" fill="#3572A5" />
-<rect x="429.01" y="64" width="14.99" height="8" fill="#8b949e" />
+<rect x="16.00" y="64" width="215.55" height="8" fill="#f1e05a" />
+<rect x="231.55" y="64" width="87.45" height="8" fill="#3178c6" />
+<rect x="319.00" y="64" width="46.49" height="8" fill="#e34c26" />
+<rect x="365.50" y="64" width="40.64" height="8" fill="#00ADD8" />
+<rect x="406.14" y="64" width="22.88" height="8" fill="#3572A5" />
+<rect x="429.02" y="64" width="14.98" height="8" fill="#8b949e" />
 
 </g>
 
