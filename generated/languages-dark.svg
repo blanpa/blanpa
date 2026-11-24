@@ -52,24 +52,24 @@
 
 <g clip-path="url(#bar-clip)">
 <rect x="16" y="64" width="428" height="8" fill="#30363d" />
-<rect x="16.00" y="64" width="201.15" height="8" fill="#f1e05a" />
-<rect x="217.15" y="64" width="81.96" height="8" fill="#3178c6" />
-<rect x="299.12" y="64" width="44.66" height="8" fill="#e34c26" />
-<rect x="343.78" y="64" width="37.87" height="8" fill="#00ADD8" />
-<rect x="381.64" y="64" width="26.23" height="8" fill="#dea584" />
-<rect x="407.87" y="64" width="36.13" height="8" fill="#8b949e" />
+<rect x="16.00" y="64" width="200.29" height="8" fill="#f1e05a" />
+<rect x="216.29" y="64" width="83.17" height="8" fill="#3178c6" />
+<rect x="299.46" y="64" width="44.74" height="8" fill="#e34c26" />
+<rect x="344.20" y="64" width="37.71" height="8" fill="#00ADD8" />
+<rect x="381.91" y="64" width="26.11" height="8" fill="#dea584" />
+<rect x="408.02" y="64" width="35.98" height="8" fill="#8b949e" />
 
 </g>
 
 <circle cx="21" cy="96" r="5" fill="#f1e05a" />
 <text class="lang" x="34" y="100">JavaScript</text>
-<text class="pct" x="222" y="100" text-anchor="end">47.0%</text>
+<text class="pct" x="222" y="100" text-anchor="end">46.8%</text>
 <circle cx="21" cy="124" r="5" fill="#3178c6" />
 <text class="lang" x="34" y="128">TypeScript</text>
-<text class="pct" x="222" y="128" text-anchor="end">19.2%</text>
+<text class="pct" x="222" y="128" text-anchor="end">19.4%</text>
 <circle cx="21" cy="152" r="5" fill="#e34c26" />
 <text class="lang" x="34" y="156">HTML</text>
-<text class="pct" x="222" y="156" text-anchor="end">10.4%</text>
+<text class="pct" x="222" y="156" text-anchor="end">10.5%</text>
 <circle cx="243" cy="96" r="5" fill="#00ADD8" />
 <text class="lang" x="256" y="100">Go</text>
 <text class="pct" x="444" y="100" text-anchor="end">8.8%</text>
